@@ -20,9 +20,7 @@ class StudentController {
         email,
         phoneNumber,
       });
-      res.render("add", {
-        message: "Student created successfully",
-      });
+      
       req.flash("success", "Student created successfully");
     } catch (error) {
       console.error("Error creating student:", error);
@@ -34,7 +32,7 @@ class StudentController {
     try {
       const students = await Student.find();
       res.render("list", { students });
-      req.flash("success", "Student list fetched successfully");
+      req.flash("success", "Student data fetched successfully");
     } catch (error) {
       console.error("Error fetching students:", error);
       req.flash("error", "Error fetching students");
@@ -75,9 +73,7 @@ class StudentController {
           console.log("Student not found");
           
         }
-        res.render("list", {
-          message: "Student updated successfully",
-        });
+       
         req.flash("success", "Student updated successfully");
       } catch (error) {
         console.error("Error updating student:", error);
@@ -91,9 +87,7 @@ class StudentController {
         if (!student) {
           return res.status(404).send("Student not found");
         }
-        res.render("list", {
-          message: "Student deleted successfully",
-        });
+        
         req.flash("success", "Student deleted successfully");
       } catch (error) {
         console.error("Error deleting student:", error);
