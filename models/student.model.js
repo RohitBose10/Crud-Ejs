@@ -13,12 +13,15 @@ const studentSchema = new mongoose.Schema(
     email: {
       type: String,
       required: true,
-     
     },
     phoneNumber: {
       type: String,
       required: true,
-    }
+    },
+    isdeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     versionKey: false,

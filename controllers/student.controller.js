@@ -1,99 +1,95 @@
 const Student = require("../models/student.model");
 
 class StudentController {
-  //RENDER STUDENT PAGE
   async renderStudentPage(req, res) {
     try {
       const students = await Student.find();
       res.render("add", { students });
     } catch (error) {
-      console.error("Error fetching students:", error);
+      console.error(error);
+      req.flash("error", "Unable to render student page");
+      res.redirect("/add");
     }
   }
-  //CREATE STUDENT
+
   async createStudent(req, res) {
     try {
       const { name, age, email, phoneNumber } = req.body;
-      await Student.create({
-        name,
-        age,
-        email,
-        phoneNumber,
-      });
-      
+      await Student.create({ name, age, email, phoneNumber });
+
       req.flash("success", "Student created successfully");
+      res.redirect("/list");
     } catch (error) {
-      console.error("Error creating student:", error);
+      console.error(error);
       req.flash("error", "Error creating student");
+      res.redirect("/add");
     }
   }
-  //list students in ejs
+
   async listStudents(req, res) {
     try {
       const students = await Student.find();
       res.render("list", { students });
-      req.flash("success", "Student data fetched successfully");
     } catch (error) {
-      console.error("Error fetching students:", error);
+      console.error(error);
       req.flash("error", "Error fetching students");
+      res.redirect("/add");
     }
-
   }
 
-
-  //edit student render
   async editStudentRender(req, res) {
     try {
-      const students = await Student.findById(req.params.id);
-      if (!students) {
-        console.log("Student not found");
-        
+      const student = await Student.findById(req.params.id);
+      if (!student) {
+        req.flash("error", "Student not found");
+        return res.redirect("/list");
       }
-      res.render("edit", { students });
+      res.render("edit", { student });
     } catch (error) {
-      console.error("Error fetching student:", error);
+      console.error(error);
+      req.flash("error", "Error loading edit form");
+      res.redirect("/list");
     }
   }
-    //update student
-    async updateStudent(req, res) {
-      try {
-        const { name, age, email, phoneNumber } = req.body;
-        const students = await Student.findByIdAndUpdate(
-          req.params.id,
-          {
-            name,
-            age,
-            email,
-            phoneNumber,
-          },
-          { new: true }
-        );
-        if (!students) {
-         
-          console.log("Student not found");
-          
-        }
-       
-        req.flash("success", "Student updated successfully");
-      } catch (error) {
-        console.error("Error updating student:", error);
-        req.flash("error", "Error updating student");
+
+  async updateStudent(req, res) {
+    try {
+      const { name, age, email, phoneNumber } = req.body;
+      const student = await Student.findByIdAndUpdate(
+        req.params.id,
+        { name, age, email, phoneNumber },
+        { new: true }
+      );
+      if (!student) {
+        req.flash("error", "Student not found");
+        return res.redirect("/list");
       }
+
+      req.flash("success", "Student updated successfully");
+      res.redirect("/list");
+    } catch (error) {
+      console.error(error);
+      req.flash("error", "Error updating student");
+      res.redirect("/list");
     }
-    //delete student
-    async deleteStudent(req, res) {
-      try {
-        const student = await Student.findByIdAndDelete(req.params.id);
-        if (!student) {
-          return res.status(404).send("Student not found");
-        }
-        
-        req.flash("success", "Student deleted successfully");
-      } catch (error) {
-        console.error("Error deleting student:", error);
-        req.flash("error", "Error deleting student");
+  }
+
+  async deleteStudent(req, res) {
+    try {
+      const student = await Student.findByIdAndDelete(req.params.id);
+      if (!student) {
+        req.flash("error", "Student not found");
+        return res.redirect("/list");
       }
+
+      req.flash("success", "Student deleted successfully");
+      res.redirect("/list");
+    } catch (error) {
+      console.error(error);
+      req.flash("error", "Error deleting student");
+      res.redirect("/list");
     }
+  }
 }
 
 module.exports = new StudentController();
