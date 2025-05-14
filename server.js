@@ -37,6 +37,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use(require("./routes/student.routes"));
+app.use(require("./routes/teacher.routes"));
 
 
 

@@ -13,10 +13,13 @@
     <div class="container mt-5">
       <h2 class="mb-4">Add New Student</h2>
       <br />
-      <% if(success_message.length > 0) {%>
-      <div class="alert alert-success" role="alert"><%= success_message %></div>
-      <% } %> <% if(error_message.length > 0) {%>
-      <div class="alert alert-danger" role="alert"><%= error_message %></div>
+
+      <% if(success_message.length > 0) { %>
+        <div class="alert alert-success"><%= success_message %></div>
+      <% } %>
+
+      <% if(error_message.length > 0) { %>
+        <div class="alert alert-danger"><%= error_message %></div>
       <% } %>
 
       <form action="/insert" method="POST">
@@ -24,18 +27,32 @@
           <label class="form-label">Name</label>
           <input type="text" class="form-control" name="name" required />
         </div>
+
         <div class="mb-3">
           <label class="form-label">Age</label>
           <input type="number" class="form-control" name="age" required />
         </div>
+
         <div class="mb-3">
           <label class="form-label">Email</label>
           <input type="email" class="form-control" name="email" required />
         </div>
+
+        <div class="mb-3">
+          <label class="form-label">Teacher</label>
+          <select class="form-select" name="teacherId" required>
+            <option value="">-- Select a Teacher --</option>
+            <% teachers.map(teacher => { %>
+              <option value="<%= teacher._id %>"><%= teacher.name %></option>
+            <% }) %>
+          </select>
+        </div>
+
         <div class="mb-3">
           <label class="form-label">Phone Number</label>
           <input type="text" class="form-control" name="phoneNumber" required />
         </div>
+
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
     </div>

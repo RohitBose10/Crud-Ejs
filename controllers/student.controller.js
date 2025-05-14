@@ -1,10 +1,12 @@
-const Student = require("../models/student.model");
+const studentRepo = require("../repository/student.repo");
+const teacherRepo = require("../repository/teacher.repo");
 
 class StudentController {
   async renderStudentPage(req, res) {
     try {
-      const students = await Student.find();
-      res.render("add", { students });
+      const students = await studentRepo.findAll();
+      const teachers = await teacherRepo.findAll();
+      res.render("add", { students, teachers });
     } catch (error) {
       console.error(error);
       req.flash("error", "Unable to render student page");
@@ -14,9 +16,8 @@ class StudentController {
 
   async createStudent(req, res) {
     try {
-      const { name, age, email, phoneNumber } = req.body;
-      await Student.create({ name, age, email, phoneNumber });
-
+      const { name, age, email, phoneNumber, teacherId } = req.body;
+      await studentRepo.create({ name, age, email, phoneNumber, teacherId });
       req.flash("success", "Student created successfully");
       res.redirect("/list");
     } catch (error) {
@@ -28,7 +29,7 @@ class StudentController {
 
   async listStudents(req, res) {
     try {
-      const students = await Student.find();
+      const students = await studentRepo.findAll();
       res.render("list", { students });
     } catch (error) {
       console.error(error);
@@ -39,7 +40,7 @@ class StudentController {
 
   async editStudentRender(req, res) {
     try {
-      const student = await Student.findById(req.params.id);
+      const student = await studentRepo.findById(req.params.id);
       if (!student) {
         req.flash("error", "Student not found");
         return res.redirect("/list");
@@ -55,7 +56,7 @@ class StudentController {
   async updateStudent(req, res) {
     try {
       const { name, age, email, phoneNumber } = req.body;
-      const student = await Student.findByIdAndUpdate(
+      const student = await studentRepo.updateById(
         req.params.id,
         { name, age, email, phoneNumber },
         { new: true }
@@ -76,7 +77,7 @@ class StudentController {
 
   async deleteStudent(req, res) {
     try {
-      const student = await Student.findByIdAndDelete(req.params.id);
+      const student = await studentRepo.deleteById(req.params.id);
       if (!student) {
         req.flash("error", "Student not found");
         return res.redirect("/list");

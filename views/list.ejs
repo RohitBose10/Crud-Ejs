@@ -26,6 +26,7 @@
             <th>Age</th>
             <th>Email</th>
             <th>Phone</th>
+            <th>Teacher</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -36,6 +37,7 @@
             <td><%= student.age %></td>
             <td><%= student.email %></td>
             <td><%= student.phoneNumber %></td>
+            <td><%= student.teacherName || "No teacher assigned" %></td>
             <td>
               <a href="/edit/<%= student._id %>" class="btn btn-primary btn-sm"
                 >Edit</a
